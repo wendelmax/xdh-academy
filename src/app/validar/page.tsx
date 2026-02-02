@@ -3,19 +3,7 @@
 import { useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-
-interface CertificateRecord {
-  certificateId: string;
-  participantName: string;
-  participantEmail: string;
-  participantId: string;
-  level: string;
-  levelName: string;
-  score: number;
-  totalQuestions: number;
-  passed: boolean;
-  issuedAt: string;
-}
+import type { CertificateRecord } from "@/lib/certificates";
 
 function ValidarContent() {
   const searchParams = useSearchParams();
@@ -29,6 +17,11 @@ function ValidarContent() {
     certificates?: CertificateRecord[];
     error?: string;
   } | null>(null);
+
+  const modeButtonClass = (active: boolean) =>
+    active
+      ? "bg-neutral-900 text-white dark:bg-teal-600"
+      : "bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300";
 
   const search = useCallback(async () => {
     const value = query.trim();
@@ -84,22 +77,14 @@ function ValidarContent() {
           <button
             type="button"
             onClick={() => setMode("id")}
-            className={`rounded-lg px-4 py-2 text-sm font-medium ${
-              mode === "id"
-                ? "bg-neutral-900 text-white dark:bg-teal-600"
-                : "bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
-            }`}
+            className={`rounded-lg px-4 py-2 text-sm font-medium ${modeButtonClass(mode === "id")}`}
           >
             Por ID do certificado
           </button>
           <button
             type="button"
             onClick={() => setMode("participant")}
-            className={`rounded-lg px-4 py-2 text-sm font-medium ${
-              mode === "participant"
-                ? "bg-neutral-900 text-white dark:bg-teal-600"
-                : "bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
-            }`}
+            className={`rounded-lg px-4 py-2 text-sm font-medium ${modeButtonClass(mode === "participant")}`}
           >
             Por participante
           </button>
@@ -149,19 +134,12 @@ function ValidarContent() {
               {result.error}
             </p>
           )}
-          {result.valid && result.certificate && (() => {
-            const levelSlug =
-              result.certificate.level === "foundation"
-                ? "foundation"
-                : result.certificate.level === "practitioner"
-                  ? "practitioner"
-                  : "expert";
-            return (
+          {result.valid && result.certificate && (
             <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
               <div className="flex shrink-0 justify-center sm:justify-start">
                 <div className="rounded-xl border-2 border-teal-200 bg-white p-3 shadow-inner dark:border-teal-700 dark:bg-neutral-900/50">
                   <img
-                    src={`/api/badges/${levelSlug}?v=2`}
+                    src={`/api/badges/${result.certificate.level}?v=2`}
                     alt={`Badge ${result.certificate.levelName}`}
                     className="h-28 w-28 object-contain sm:h-32 sm:w-32"
                   />
@@ -210,8 +188,7 @@ function ValidarContent() {
                 </dl>
               </div>
             </div>
-            );
-          })()}
+          )}
           {result.valid && result.certificates && result.certificates.length > 0 && (
             <div>
               <p className="font-semibold text-teal-900 dark:text-teal-100">

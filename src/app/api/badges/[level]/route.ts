@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import fs from "fs/promises";
-
-const VALID_LEVELS = ["foundation", "practitioner", "expert"];
+import { CERTIFICATION_LEVEL_IDS } from "@/data/certification";
 
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ level: string }> }
 ) {
   const { level } = await params;
-  if (!VALID_LEVELS.includes(level)) {
+  if (!(CERTIFICATION_LEVEL_IDS as readonly string[]).includes(level)) {
     return NextResponse.json({ error: "Nível inválido." }, { status: 400 });
   }
   try {

@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   title: "XGH Academy | Extreme Go Horse - Aprendizado Formal",
   description:
     "Plataforma de aprendizado sobre Extreme Go Horse (XGH): da sátira às práticas produtivas para POC, MVP e entrega ágil com qualidade. Certificação e validação de certificados.",
+  icons: {
+    icon: "/xgh-certificacao-badge.png",
+  },
 };
 
 export default function RootLayout({

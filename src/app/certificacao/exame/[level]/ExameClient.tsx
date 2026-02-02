@@ -80,19 +80,6 @@ export default function ExameClient({ level }: { level: CertificationLevel }) {
 
   useEffect(() => {
     if (!exam || submitted) return;
-    const t = setTimeout(() => {
-      const current = answersRef.current;
-      const hints = hintForQuestionRef.current;
-      const firstUnanswered = exam.questions.find((q) => current[q.id] === undefined && !hints[q.id]);
-      if (firstUnanswered) {
-        setHintForQuestion((prev) => ({ ...prev, [firstUnanswered.id]: getRandomHint() }));
-      }
-    }, HINT_DELAY_MS);
-    return () => clearTimeout(t);
-  }, [exam, submitted]);
-
-  useEffect(() => {
-    if (!exam || submitted) return;
     const id = setInterval(() => {
       const current = answersRef.current;
       const hints = hintForQuestionRef.current;
@@ -241,7 +228,7 @@ export default function ExameClient({ level }: { level: CertificationLevel }) {
         <p className="mt-2 text-sm sm:text-base text-teal-800 dark:text-teal-200">
           O e-mail informado já está associado a um certificado aprovado para este nível.
         </p>
-        <p className="mt-3 break-words font-mono text-xs sm:text-sm text-teal-700 dark:text-teal-300">
+        <p className="mt-3 wrap-break-word font-mono text-xs sm:text-sm text-teal-700 dark:text-teal-300">
           {alreadyCertifiedCertificate.participantName} – {alreadyCertifiedCertificate.levelName}
         </p>
         <p className="mt-1 break-all text-xs sm:text-sm text-teal-600 dark:text-teal-400">
@@ -315,7 +302,7 @@ export default function ExameClient({ level }: { level: CertificationLevel }) {
             <p className="mt-2 break-all font-mono text-xs sm:text-sm text-teal-800 dark:text-teal-200">
               ID: {result.certificate.certificateId}
             </p>
-            <p className="mt-1 break-words text-xs sm:text-sm text-teal-700 dark:text-teal-300">
+            <p className="mt-1 wrap-break-word text-xs sm:text-sm text-teal-700 dark:text-teal-300">
               {result.certificate.participantName} – {result.certificate.levelName}
             </p>
             <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -327,7 +314,11 @@ export default function ExameClient({ level }: { level: CertificationLevel }) {
               </Link>
               <a
                 href={`/api/certificates/${result.certificate.certificateId}/pdf`}
-                download={`XGH-Academy-${result.certificate.certificateId}.pdf`}
+                download={
+                  result.certificate.levelName.includes("Vibe Coder")
+                    ? `XGH-AI-Vibe-Coder-${result.certificate.certificateId}.pdf`
+                    : `XGH-Academy-${result.certificate.certificateId}.pdf`
+                }
                 className="w-full rounded-lg border border-teal-600 bg-teal-50 px-4 py-2 text-center text-sm font-medium text-teal-700 dark:border-teal-500 dark:text-teal-300 dark:bg-teal-900/30 sm:w-auto"
               >
                 Baixar PDF

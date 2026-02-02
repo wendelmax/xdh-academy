@@ -7,7 +7,7 @@ export const metadata = {
     "Origem e contexto do Extreme Go Horse (XGH), por que estudar de forma séria e o que extrair para POC, MVP e agilidade.",
 };
 
-export default function OQueEXdhPage() {
+export default function OQueEXghPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-white">

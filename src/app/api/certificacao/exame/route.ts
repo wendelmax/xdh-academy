@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
 
   if (!level || !certificationLevels.some((l) => l.id === level)) {
     return NextResponse.json(
-      { error: "Nível inválido. Use foundation, practitioner ou expert." },
+      { error: "Nível inválido. Use foundation, practitioner, expert ou ai." },
       { status: 400 }
     );
   }

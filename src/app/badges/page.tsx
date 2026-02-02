@@ -93,20 +93,13 @@ export default function BadgesPage() {
             </p>
           ) : (
             <ul className="space-y-6">
-              {certs.map((c) => {
-                const levelSlug =
-                  c.level === "foundation"
-                    ? "foundation"
-                    : c.level === "practitioner"
-                      ? "practitioner"
-                      : "expert";
-                return (
+              {certs.map((c) => (
                   <li
                     key={c.certificateId}
                     className="flex flex-col items-center gap-4 rounded-xl border border-neutral-200 bg-white p-6 sm:flex-row sm:items-start dark:border-neutral-800 dark:bg-neutral-900/50"
                   >
                     <BadgeSpotlight
-                      badgeUrl={`/api/badges/${levelSlug}?v=2`}
+                      badgeUrl={`/api/badges/${c.level}?v=2`}
                       alt={`Badge ${c.levelName}`}
                       thumbnailClassName="h-24 w-24 object-contain"
                     />
@@ -136,8 +129,7 @@ export default function BadgesPage() {
                       </div>
                     </div>
                   </li>
-                );
-              })}
+              ))}
             </ul>
           )}
         </div>

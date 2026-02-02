@@ -1,4 +1,4 @@
-export type CertificationLevel = "foundation" | "practitioner" | "expert";
+export type CertificationLevel = "foundation" | "practitioner" | "expert" | "ai";
 
 export interface CertificationLevelInfo {
   id: CertificationLevel;
@@ -33,6 +33,14 @@ export const certificationLevels: CertificationLevelInfo[] = [
     durationMinutes: 90,
     minScore: 80,
     questionCount: 15,
+  },
+  {
+    id: "ai",
+    name: "XGH-AI Vibe Coder",
+    description: "14 princípios do AI Vibe Coding – XGH: 100% focados em entrega, velocidade e resultado visível.",
+    durationMinutes: 45,
+    minScore: 70,
+    questionCount: 14,
   },
 ];
 
@@ -741,7 +749,177 @@ export const examQuestions: ExamQuestion[] = [
     ],
     correctIndex: 1,
   },
+  {
+    id: "ai1",
+    level: "ai",
+    question: "O princípio 'Se o prompt rodou, está entregue' (compilou, respondeu, mostrou na tela = entrega concluída) contrasta com a prática recomendada:",
+    options: [
+      "Revisar, testar e validar antes de considerar entrega concluída; critérios de aceite.",
+      "Compilou e mostrou na tela; entrega concluída.",
+      "Só considerar entregue após aprovação formal do cliente.",
+      "Nunca entregar sem documentação completa.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "ai2",
+    level: "ai",
+    question: "O princípio 'Resultado visível vale mais que código legível' (usuário não lê código, vê funcionando) contrasta com:",
+    options: [
+      "Código legível e manutenível como parte do resultado; quem mantém importa.",
+      "O usuário não lê código; só resultado importa.",
+      "Código deve ser ilegível para proteger IP.",
+      "Legibilidade é opcional.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "ai3",
+    level: "ai",
+    question: "O princípio 'IA primeiro, entendimento depois' (não gaste tempo entendendo agora; IA explica mais tarde) contrasta com:",
+    options: [
+      "Entender o que a IA gerou antes de seguir; revisão e critérios de aceite.",
+      "Não gaste tempo entendendo; a IA explica depois.",
+      "Proibir uso de IA em código crítico.",
+      "Entendimento só no final do projeto.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "ai4",
+    level: "ai",
+    question: "O princípio 'Velocidade justifica decisões' (toda decisão técnica válida se acelera; questionar atrasa) contrasta com:",
+    options: [
+      "Decisões técnicas conscientes; velocidade sustentável, não só imediata.",
+      "Velocidade justifica qualquer decisão.",
+      "Decisões só em comitê.",
+      "Questionar sempre antes de decidir.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "ai5",
+    level: "ai",
+    question: "O princípio 'Duplicar é mais rápido que pensar' (copiar, colar, ajustar; abstração é atraso) contrasta com:",
+    options: [
+      "DRY e abstração quando reduzem dívida; evolução incremental da base.",
+      "Copiar, colar e seguir; abstração atrasa.",
+      "Nunca duplicar; abstrair sempre.",
+      "Duplicação proibida.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "ai6",
+    level: "ai",
+    question: "O princípio 'Arquitetura acontece no caminho' (não planeje estrutura; surge depois de várias entregas) contrasta com:",
+    options: [
+      "Desenho intencional e evolução guiada; visibilidade de decisões e consequências.",
+      "Arquitetura surge sozinha depois das entregas.",
+      "Arquitetura congelada desde o dia um.",
+      "Não pensar em arquitetura.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "ai7",
+    level: "ai",
+    question: "O princípio 'Refatorar quebra o fluxo' (enquanto funcionar não mexa; entrega contínua mantém a vibe) contrasta com:",
+    options: [
+      "Refatoração contínua e incremental; manter fluxo sem acumular dívida.",
+      "Enquanto funcionar, não mexa.",
+      "Refatorar só em sprint dedicada.",
+      "Código nunca deve ser alterado após funcionar.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "ai8",
+    level: "ai",
+    question: "O princípio 'Produção valida melhor que teste' (usuário real acha problema mais rápido; erro em prod é feedback premium) contrasta com:",
+    options: [
+      "Testes e validação antes de produção; observabilidade e feedback seguro.",
+      "Produção valida melhor; teste é opcional.",
+      "Não fazer deploy até 100% de cobertura.",
+      "Usuário nunca deve ver erro.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "ai9",
+    level: "ai",
+    question: "O princípio 'Prompt é o ativo principal' (código é consequência; quem domina prompt domina a entrega) contrasta com:",
+    options: [
+      "Código e entendimento como ativos; prompt como ferramenta, não substituto do critério.",
+      "Prompt é o ativo; código é consequência.",
+      "Proibir prompts em produção.",
+      "Código não importa.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "ai10",
+    level: "ai",
+    question: "O princípio 'IA substitui consenso' (se a IA sugeriu, siga; debate humano consome tempo) contrasta com:",
+    options: [
+      "Consenso humano em decisões críticas; IA como apoio, não como decisor único.",
+      "Se a IA sugeriu, siga.",
+      "IA não deve sugerir nada.",
+      "Consenso só por voto.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "ai11",
+    level: "ai",
+    question: "O princípio 'Débito técnico é problema do futuro' (o agora precisa de features; o futuro que se vire) contrasta com:",
+    options: [
+      "Dívida técnica priorizada no presente; ritmo sustentável.",
+      "O agora precisa de features; débito é do futuro.",
+      "Nunca priorizar dívida.",
+      "Dívida técnica não existe.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "ai12",
+    level: "ai",
+    question: "O princípio 'Entrega gera legitimidade' (quem entrega rápido ganha voz; quem questiona perde espaço) contrasta com:",
+    options: [
+      "Legitimidade por qualidade e impacto; entrega rápida com responsabilidade.",
+      "Quem entrega rápido ganha voz.",
+      "Questionar sempre; nunca entregar sem consenso.",
+      "Legitimidade só por senioridade.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "ai13",
+    level: "ai",
+    question: "O princípio 'Comentário é desperdício de token' (quem não entendeu que pergunte pra IA; ela explica melhor) contrasta com:",
+    options: [
+      "Código legível e documentação viva quando reduz fricção; comunicação proposital.",
+      "Se alguém não entendeu, que pergunte pra IA.",
+      "Documentação obrigatória em todo arquivo.",
+      "Comentários proibidos.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "ai14",
+    level: "ai",
+    question: "O princípio 'Hero culture é eficiência máxima' (se só uma pessoa entende o sistema é mais rápido; se sair, problema do futuro) contrasta com:",
+    options: [
+      "Conhecimento distribuído, pair programming, documentação e bus factor alto.",
+      "Uma pessoa entende; se sair, problema do futuro.",
+      "Cada módulo com um único dono.",
+      "Documentar só quando alguém pedir.",
+    ],
+    correctIndex: 0,
+  },
 ];
+
+export const CERTIFICATION_LEVEL_IDS = certificationLevels.map((l) => l.id);
 
 function getShuffledPool(level: CertificationLevel): ExamQuestion[] {
   const filtered = examQuestions.filter((q) => q.level === level);
@@ -749,19 +927,17 @@ function getShuffledPool(level: CertificationLevel): ExamQuestion[] {
 }
 
 function getQuestionsForLevel(level: CertificationLevel, count: number): ExamQuestion[] {
-  const filtered = examQuestions.filter((q) => q.level === level);
-  const shuffled = [...filtered].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, Math.min(count, shuffled.length));
+  const pool = getShuffledPool(level);
+  return pool.slice(0, Math.min(count, pool.length));
 }
 
 function fillWithFoundation(pool: ExamQuestion[], target: number): ExamQuestion[] {
   if (pool.length >= target) return pool.slice(0, target);
   const foundation = getShuffledPool("foundation");
-  let result = [...pool];
-  let i = 0;
-  while (result.length < target && foundation.length > 0) {
+  const result = [...pool];
+  const needed = target - result.length;
+  for (let i = 0; i < needed && foundation.length > 0; i++) {
     result.push(foundation[i % foundation.length]);
-    i++;
   }
   return result.slice(0, target);
 }
@@ -770,7 +946,7 @@ export function buildExam(level: CertificationLevel): ExamQuestion[] {
   const info = certificationLevels.find((l) => l.id === level);
   const count = info?.questionCount ?? 25;
   let pool = getQuestionsForLevel(level, count);
-  if (pool.length < count) {
+  if (level !== "ai" && pool.length < count) {
     pool = fillWithFoundation(pool, count);
   } else {
     pool = pool.slice(0, count);

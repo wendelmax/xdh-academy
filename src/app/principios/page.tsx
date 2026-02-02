@@ -1,26 +1,85 @@
 import { principios } from "@/data/principios";
+import {
+  principiosAi,
+  MANDAMENTO_XGH_AI,
+  SLOGAN_XGH_AI,
+} from "@/data/principios-ai";
 import Link from "next/link";
 
-export const metadata = {
-  title: "Os 22 Princípios do XGH | XGH Academy",
-  description:
-    "Lista completa dos 22 princípios do Extreme Go Horse com contraste às práticas recomendadas.",
+type PageProps = {
+  searchParams: Promise<{ edition?: string }>;
 };
 
-export default function PrincipiosPage() {
+export async function generateMetadata({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const isAi = params.edition === "ai";
+  return {
+    title: isAi
+      ? "Os 14 Princípios do AI Vibe Coding – XGH | XGH Academy"
+      : "Os 22 Princípios do XGH | XGH Academy",
+    description: isAi
+      ? "Princípios XGH aplicados a paradigmas atuais: IA, planejamento, remoto, plataforma e qualidade. Cada princípio descreve uma prática XGH e a prática recomendada."
+      : "Lista completa dos 22 princípios do Extreme Go Horse com contraste às práticas recomendadas.",
+  };
+}
+
+export default async function PrincipiosPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const isAi = params.edition === "ai";
+  const lista = isAi ? principiosAi : principios;
+  const titulo = isAi ? "Os 14 Princípios do AI Vibe Coding – XGH" : "Os 22 Princípios do XGH";
+  const intro = isAi
+    ? "100% focados em entrega, velocidade e resultado visível. Nada de padrão, nada de cheiro, nada de consciência técnica. Cada princípio descreve a vibe XGH e a prática recomendada."
+    : "Cada princípio descreve uma prática XGH. Em contraste, indicamos o anti-padrão recomendado para não repetir o erro e manter produtividade sustentável em POC, MVP e projetos ágeis.";
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
+      <div className="mb-6 flex flex-wrap items-center gap-2 border-b border-neutral-200 pb-4 dark:border-neutral-800">
+        <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+          Edição:
+        </span>
+        <div className="flex rounded-lg border border-neutral-200 bg-neutral-50 p-0.5 dark:border-neutral-700 dark:bg-neutral-800/50">
+          <Link
+            href="/principios"
+            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+              !isAi
+                ? "bg-white text-neutral-900 shadow dark:bg-neutral-700 dark:text-white"
+                : "text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
+            }`}
+          >
+            XGH clássico
+          </Link>
+          <Link
+            href="/principios?edition=ai"
+            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+              isAi
+                ? "bg-white text-neutral-900 shadow dark:bg-neutral-700 dark:text-white"
+                : "text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
+            }`}
+          >
+            XGH-AI Vibe Coder
+          </Link>
+        </div>
+      </div>
+
       <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-white">
-        Os 22 Princípios do XGH
+        {titulo}
       </h1>
-      <p className="mt-4 text-neutral-600 dark:text-neutral-400">
-        Cada princípio descreve uma prática XGH. Em contraste, indicamos o
-        anti-padrão recomendado para não repetir o erro e manter produtividade
-        sustentável em POC, MVP e projetos ágeis.
-      </p>
+      <p className="mt-4 text-neutral-600 dark:text-neutral-400">{intro}</p>
+
+      {isAi && (
+        <div className="mt-8 space-y-4 rounded-2xl border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800 dark:bg-neutral-900/50">
+          <blockquote className="border-l-4 border-teal-500 pl-4 text-lg font-medium italic text-neutral-800 dark:text-neutral-200">
+            {MANDAMENTO_XGH_AI}
+          </blockquote>
+          <p className="text-right text-sm font-semibold text-teal-700 dark:text-teal-400">
+            {SLOGAN_XGH_AI}
+          </p>
+        </div>
+      )}
 
       <div className="mt-10 space-y-8">
-        {principios.map((a) => (
+        {lista.map((a) => (
           <article
             key={a.id}
             className="rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900/50"

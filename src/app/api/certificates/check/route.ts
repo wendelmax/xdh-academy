@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { findCertificateByEmailAndLevel } from "@/lib/certificates";
-import type { CertificationLevel } from "@/data/certification";
-
-const VALID_LEVELS: CertificationLevel[] = ["foundation", "practitioner", "expert"];
+import { CERTIFICATION_LEVEL_IDS, type CertificationLevel } from "@/data/certification";
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,7 +14,7 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       );
     }
-    if (!level || !VALID_LEVELS.includes(level as CertificationLevel)) {
+    if (!level || !(CERTIFICATION_LEVEL_IDS as readonly string[]).includes(level)) {
       return NextResponse.json(
         { error: "Nível inválido." },
         { status: 400 }

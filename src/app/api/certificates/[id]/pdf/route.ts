@@ -5,31 +5,17 @@ import QRCode from "qrcode";
 import path from "path";
 import fs from "fs/promises";
 
-function getLevelRgb(level: string): [number, number, number] {
-  switch (level) {
-    case "foundation":
-      return [13, 148, 136]; // Teal 600
-    case "practitioner":
-      return [37, 99, 235]; // Blue 600
-    case "expert":
-      return [217, 119, 6]; // Amber 600
-    default:
-      return [13, 148, 136];
-  }
-}
+const LEVEL_PDF_STYLE: Record<
+  string,
+  { rgb: [number, number, number]; label: string }
+> = {
+  foundation: { rgb: [13, 148, 136], label: "FOUNDATION" },
+  practitioner: { rgb: [37, 99, 235], label: "PRACTITIONER" },
+  expert: { rgb: [217, 119, 6], label: "EXPERT" },
+  ai: { rgb: [99, 102, 241], label: "AI" },
+};
 
-function getLevelLabel(level: string): string {
-  switch (level) {
-    case "foundation":
-      return "FOUNDATION";
-    case "practitioner":
-      return "PRACTITIONER";
-    case "expert":
-      return "EXPERT";
-    default:
-      return level.toUpperCase();
-  }
-}
+const DEFAULT_LEVEL_STYLE = LEVEL_PDF_STYLE.foundation;
 
 function getBaseUrl(request: NextRequest): string {
   const url = request.url ? new URL(request.url) : null;
@@ -64,6 +50,15 @@ export async function GET(
     badgeDataUrl = null;
   }
 
+  let sealDataUrl: string | null = null;
+  try {
+    const sealPath = path.join(process.cwd(), "public", "xgh-certificacao-badge.png");
+    const sealBuffer = await fs.readFile(sealPath);
+    sealDataUrl = `data:image/png;base64,${sealBuffer.toString("base64")}`;
+  } catch {
+    sealDataUrl = null;
+  }
+
   let qrDataUrl: string | null = null;
   try {
     qrDataUrl = await QRCode.toDataURL(certificateUrl, {
@@ -78,9 +73,9 @@ export async function GET(
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   const w = 297;
   const h = 210;
-  const [r, g, b] = getLevelRgb(cert.level);
+  const levelStyle = LEVEL_PDF_STYLE[cert.level] ?? DEFAULT_LEVEL_STYLE;
+  const [r, g, b] = levelStyle.rgb;
   const margin = 12;
-  const levelLabel = getLevelLabel(cert.level);
 
   // Background
   doc.setFillColor(255, 255, 255);
@@ -105,57 +100,59 @@ export async function GET(
   doc.setFillColor(r, g, b);
   doc.rect(margin, margin, w - 2 * margin, 15, "F");
 
-  // Header Text
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
   doc.text("XGH ACADEMY", margin + 10, margin + 9);
-  doc.text("CERTIFICATE OF COMPLETION", w - margin - 10, margin + 9, { align: "right" });
+  doc.text("CERTIFICADO DE CONCLUSÃO", w - margin - 10, margin + 9, { align: "right" });
 
-  // Main Content Area
   const centerX = w / 2;
 
   doc.setTextColor(60, 60, 60);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(12);
-  doc.text("This is to certify that", centerX, 65, { align: "center" });
+  doc.text("Certificamos que", centerX, 65, { align: "center" });
 
-  // Participant Name
   doc.setTextColor(r, g, b);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(42);
   doc.text(cert.participantName, centerX, 85, { align: "center" });
 
-  // Recognition Text
   doc.setTextColor(60, 60, 60);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(14);
-  doc.text("has successfully completed the examination for", centerX, 105, { align: "center" });
+  doc.text("concluiu com aprovação o exame de", centerX, 105, { align: "center" });
 
   doc.setTextColor(r, g, b);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
-  doc.text(`XGH ${levelLabel}`, centerX, 115, { align: "center" });
+  doc.text(cert.levelName, centerX, 115, { align: "center" });
+
+  if (cert.level === "ai") {
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    doc.text("XGH-AI — Promptou, rodou, subiu.", centerX, 120, { align: "center" });
+  }
 
   doc.setTextColor(80, 80, 80);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(11);
-  doc.text("Issued by XGH Academy Global Certification Program", centerX, 128, { align: "center" });
+  const emitidoY = cert.level === "ai" ? 130 : 128;
+  doc.text("Emitido por XGH Academy — Programa Global de Certificação", centerX, emitidoY, { align: "center" });
 
-  // Divider line
   doc.setDrawColor(230, 230, 230);
   doc.setLineWidth(0.5);
   doc.line(centerX - 40, 140, centerX + 40, 140);
 
-  // Stats & Date
-  const issuedDate = new Date(cert.issuedAt).toLocaleDateString("en-US", {
+  const issuedDate = new Date(cert.issuedAt).toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "long",
     year: "numeric",
   });
   doc.setFontSize(10);
   doc.setTextColor(100, 100, 100);
-  doc.text(`Score: ${cert.score}%  |  Date: ${issuedDate}`, centerX, 150, { align: "center" });
+  doc.text(`Pontuação: ${cert.score}%  |  Emitido em ${issuedDate}`, centerX, 150, { align: "center" });
 
   // Bottom Elements (Badge and QR)
 
@@ -192,23 +189,34 @@ export async function GET(
     doc.setFont("helvetica", "bold");
     doc.setFontSize(6);
     doc.setTextColor(r, g, b);
-    doc.text("VERIFY AUTHENTICITY", qrX + qrSize / 2, qrY + qrSize + 6, { align: "center" });
+    doc.text("VALIDAR AUTENTICIDADE", qrX + qrSize / 2, qrY + qrSize + 6, { align: "center" });
     doc.setFont("helvetica", "normal");
-    doc.text("Scan to validate", qrX + qrSize / 2, qrY + qrSize + 9, { align: "center" });
+    doc.text("Escaneie para validar", qrX + qrSize / 2, qrY + qrSize + 9, { align: "center" });
   }
 
-  // Footer Certificate ID
+  if (sealDataUrl) {
+    const sealSize = 26;
+    const sealX = margin + 8;
+    const sealY = margin + 18;
+    doc.addImage(sealDataUrl, "PNG", sealX, sealY, sealSize, sealSize);
+  }
+
   doc.setFont("courier", "normal");
   doc.setFontSize(8);
   doc.setTextColor(150, 150, 150);
   doc.text(`${cert.certificateId}`, centerX, h - margin - 8, { align: "center" });
+
+  const fileName =
+    cert.level === "ai"
+      ? `XGH-AI-Vibe-Coder-${cert.certificateId}.pdf`
+      : `XGH-Academy-${cert.certificateId}.pdf`;
 
   const blob = doc.output("arraybuffer");
   return new NextResponse(blob, {
     status: 200,
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="XGH-Academy-${cert.certificateId}.pdf"`,
+      "Content-Disposition": `attachment; filename="${fileName}"`,
     },
   });
 }

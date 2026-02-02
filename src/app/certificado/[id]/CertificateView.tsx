@@ -40,6 +40,12 @@ const levelStyles: Record<
     accent: "text-amber-700 dark:text-amber-300",
     label: "text-amber-600 dark:text-amber-400",
   },
+  ai: {
+    border: "border-violet-600/40 dark:border-violet-400/30",
+    bg: "bg-violet-50/80 dark:bg-violet-950/30",
+    accent: "text-violet-700 dark:text-violet-300",
+    label: "text-violet-600 dark:text-violet-400",
+  },
 };
 
 export default function CertificateView({
@@ -51,13 +57,7 @@ export default function CertificateView({
     month: "long",
     year: "numeric",
   });
-  const levelSlug =
-    certificate.level === "foundation"
-      ? "foundation"
-      : certificate.level === "practitioner"
-        ? "practitioner"
-        : "expert";
-  const style = levelStyles[levelSlug] ?? levelStyles.foundation;
+  const style = levelStyles[certificate.level] ?? levelStyles.foundation;
 
   return (
     <div className="space-y-8">
@@ -71,7 +71,7 @@ export default function CertificateView({
               className={`flex shrink-0 items-center justify-center rounded-2xl border-2 ${style.border} ${style.bg} p-4 shadow-inner`}
             >
               <BadgeSpotlight
-                badgeUrl={`/api/badges/${levelSlug}?v=2`}
+                badgeUrl={`/api/badges/${certificate.level}?v=2`}
                 alt={`Badge ${certificate.levelName}`}
                 thumbnailClassName="h-24 w-24 object-contain sm:h-28 sm:w-28"
               />
@@ -101,6 +101,11 @@ export default function CertificateView({
                   </span>
                   .
                 </p>
+                {certificate.level === "ai" && (
+                  <p className="mt-2 text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                    Promptou, rodou, subiu.
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -127,7 +132,11 @@ export default function CertificateView({
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <a
             href={`/api/certificates/${certificateId}/pdf`}
-            download={`XGH-Academy-${certificate.certificateId}.pdf`}
+            download={
+              certificate.level === "ai"
+                ? `XGH-AI-Vibe-Coder-${certificate.certificateId}.pdf`
+                : `XGH-Academy-${certificate.certificateId}.pdf`
+            }
             className="inline-flex items-center rounded-lg bg-neutral-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-neutral-700 dark:bg-teal-600 dark:hover:bg-teal-500"
           >
             Baixar certificado (PDF)

@@ -1,10 +1,19 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function HomePage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
       <section className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-neutral-900 dark:text-white sm:text-5xl">
+        <Image
+          src="/xgh-certificacao-badge.png"
+          alt="Logo XGH Academy"
+          width={480}
+          height={480}
+          className="mx-auto h-72 w-auto object-contain"
+          priority
+        />
+        <h1 className="mt-6 text-4xl font-bold tracking-tight text-neutral-900 dark:text-white sm:text-5xl">
           XGH Academy
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-neutral-600 dark:text-neutral-400">

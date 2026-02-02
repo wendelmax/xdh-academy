@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 
@@ -43,14 +44,14 @@ export default function Header() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      Object.values(dropdownRefs.current).forEach((ref) => {
-        if (ref && !ref.contains(event.target as Node)) {
-          setOpenGroup(null);
-        }
-      });
+      const target = event.target as Node;
+      const isOutsideDropdowns = Object.values(dropdownRefs.current).every(
+        (ref) => !ref || !ref.contains(target)
+      );
+      if (isOutsideDropdowns) setOpenGroup(null);
       if (
         mobileMenuRef.current &&
-        !mobileMenuRef.current.contains(event.target as Node)
+        !mobileMenuRef.current.contains(target)
       ) {
         setMobileMenuOpen(false);
       }
@@ -64,24 +65,35 @@ export default function Header() {
   const isActive = (href: string) => pathname === href;
   const isGroupActive = (group: NavGroup) =>
     group.items.some((item) => isActive(item.href));
+  const navLinkClass = (active: boolean) =>
+    active
+      ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
+      : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white";
+  const navItemClass = (active: boolean) =>
+    active
+      ? "bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-white"
+      : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-white";
 
   return (
     <header className="border-b border-neutral-200 bg-white/95 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/95">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <Link
           href="/"
-          className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-white"
+          className="flex items-center gap-2 text-xl font-semibold tracking-tight text-neutral-900 dark:text-white"
         >
-          XGH Academy
+          <Image
+            src="/xgh-certificacao-badge.png"
+            alt="Logo XGH Academy"
+            width={40}
+            height={40}
+            className="h-10 w-10 shrink-0 object-contain"
+          />
+          <span>XGH Academy</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           <Link
             href="/"
-            className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-              isActive("/")
-                ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
-                : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white"
-            }`}
+            className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${navLinkClass(isActive("/"))}`}
           >
             Início
           </Link>
@@ -97,11 +109,7 @@ export default function Header() {
                 onClick={() =>
                   setOpenGroup(openGroup === group.label ? null : group.label)
                 }
-                className={`flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                  isGroupActive(group)
-                    ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
-                    : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white"
-                }`}
+                className={`flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors ${navLinkClass(isGroupActive(group))}`}
               >
                 {group.label}
                 <svg
@@ -127,11 +135,7 @@ export default function Header() {
                       key={item.href}
                       href={item.href}
                       onClick={() => setOpenGroup(null)}
-                      className={`block px-4 py-2 text-sm transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                        isActive(item.href)
-                          ? "bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-white"
-                          : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-white"
-                      }`}
+                      className={`block px-4 py-2 text-sm transition-colors first:rounded-t-lg last:rounded-b-lg ${navItemClass(isActive(item.href))}`}
                     >
                       {item.label}
                     </Link>
@@ -175,11 +179,7 @@ export default function Header() {
               <Link
                 href="/"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block px-4 py-3 text-sm font-medium transition-colors first:rounded-t-lg ${
-                  isActive("/")
-                    ? "bg-neutral-100 text-neutral-900 dark:bg-neutral-800 dark:text-white"
-                    : "text-neutral-700 dark:text-neutral-300"
-                }`}
+                className={`block px-4 py-3 text-sm font-medium transition-colors first:rounded-t-lg ${navItemClass(isActive("/"))}`}
               >
                 Início
               </Link>
@@ -193,11 +193,7 @@ export default function Header() {
                       key={item.href}
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`block px-4 py-2 text-sm transition-colors last:rounded-b-lg ${
-                        isActive(item.href)
-                          ? "bg-neutral-100 font-medium text-neutral-900 dark:bg-neutral-800 dark:text-white"
-                          : "text-neutral-700 hover:bg-neutral-50 dark:text-neutral-300 dark:hover:bg-neutral-800"
-                      }`}
+                      className={`block px-4 py-2 text-sm transition-colors last:rounded-b-lg ${navItemClass(isActive(item.href))}`}
                     >
                       {item.label}
                     </Link>
